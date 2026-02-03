@@ -48,7 +48,7 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         required=True
     )
     async def on_submit(self, interaction: discord.Interaction):
-        canale_ordini = client.get_channel(1467878911395233915)
+        canale_ordini = client.get_channel(1466939135322361899)
         embed_ordini = discord.Embed(
             title="🔔 Nuovo Ordine Ricevuto!",
             color=discord.Color.green(),
@@ -61,6 +61,7 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         embed_ordini.add_field(name="id", value=self.identificatore, inline=False)
         await interaction.response.send_message(
             f'Grazie {interaction.user.mention}! Il tuo ordine è stato inviato allo staff. ☕', ephemeral=True)
+        await canale_ordini.send(<@&1466774237099331651> <@&1466773674144174140> <@&1466773435530346641> <@&1466773824484933834>)
         await canale_ordini.send(embed=embed_ordini)
 
 class MyView(discord.ui.View):
