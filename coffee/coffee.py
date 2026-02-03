@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = str(os.getenv("TOKEN"))
 GUILD_ID = 1466759785805516918
 intents = discord.Intents.default()
 intents.message_content = True
@@ -36,6 +36,7 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
     civ = discord.ui.TextInput(
         label='Civico',
         placeholder='100, 3030',
+        required=False
     )
     num = discord.ui.TextInput(
         label = 'Numero di Telefono',
@@ -61,7 +62,7 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         embed_ordini.add_field(name="id", value=self.identificatore, inline=False)
         await interaction.response.send_message(
             f'Grazie {interaction.user.mention}! Il tuo ordine è stato inviato allo staff. ☕', ephemeral=True)
-        await canale_ordini.send(<@&1466774237099331651> <@&1466773674144174140> <@&1466773435530346641> <@&1466773824484933834>)
+        await canale_ordini.send(content="<@&1466774237099331651> <@&1466773674144174140> <@&1466773435530346641> <@&1466773824484933834>")
         await canale_ordini.send(embed=embed_ordini)
 
 class MyView(discord.ui.View):
