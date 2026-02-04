@@ -65,18 +65,61 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         await canale_ordini.send(content="<@&1466774237099331651> <@&1466773674144174140> <@&1466773435530346641> <@&1466773824484933834>")
         await canale_ordini.send(embed=embed_ordini)
 
-class MyView(discord.ui.View):
+class FattureModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
+    nome = discord.ui.TextInput(
+        label = 'Nome Cognome',
+        placeholder = "Jeff Smith",
+        required=True
+    )
+    ordine = discord.ui.TextInput(
+        label='Ordine',
+        placeholder='10x10, 5x5',
+        required=True
+    )
+    prezzo = discord.ui.TextInput(
+        label='prezzo',
+        placeholder='$6000, £90000',
+        required=True
+    )
+    dataora = discord.ui.TextInput(
+        label='data e ora',
+        placeholder='01/01/2026 22:30',
+        required=True
+    )
+    async def on_submit(self, interaction: discord.Interaction):
+        canale_ordini = client.get_channel(1466939135322361899)
+        embed_ordini = discord.Embed(
+            title="🔔 Fattura creata!",
+            color=discord.Color.green(),
+            timestamp=interaction.created_at
+        )
+        embed_ordini.add_field(name="Nome", value=self.nome, inline=True)
+        embed_ordini.add_field(name="Prodotto", value=self.ordine, inline=False)
+        embed_ordini.add_field(name="prezzo", value=self.prezzo, inline=False)
+        embed_ordini.add_field(name="Data/ora", value=self.dataora, inline=False)
+        await interaction.channel.send(embed=embed_ordini)
+
+class ordini_bott(discord.ui.View):
+    def __init__(self, *, timeout = None):
+        super().__init__(timeout=timeout)
     @discord.ui.button(label="Effettua ordine!", style=discord.ButtonStyle.success, emoji="📝")
     async def button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(OrdineModal())
+
+class fattura_bott(discord.ui.View):
+    def __init__(self, *, timeout = None):
+        super().__init__(timeout=timeout)
+    @discord.ui.button(label="Compila fattura!", style=discord.ButtonStyle.success, emoji="📝")
+    async def button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(FattureModal())
 
 @client.event
 async def on_ready():
     print(f'Loggato come {client.user}!')
 
 @client.tree.command(name="ordine", description="manda embed ordini")
-async def fattura(interaction: discord.Interaction):
-    view = MyView()
+async def ordine(interaction: discord.Interaction):
+    ordini = ordini_bott()
     channel = 1466900540100182087
     embed = discord.Embed(
         title="Benvenuto nel sistema di ordini del coffee shop di Enveart!",
@@ -84,5 +127,17 @@ async def fattura(interaction: discord.Interaction):
         color=discord.Color.green()
     )
     await interaction.response.send_message("mandato!", ephemeral=True)
-    await interaction.channel.send(embed=embed, view=view)
+    await interaction.channel.send(embed=embed, view=ordini)
+
+@client.tree.command(name="fattura", description="manda embed fatture")
+async def fattura(interaction: discord.Interaction):
+    fattura = fattura_bott()
+    channel = 1466900540100182087
+    embed = discord.Embed(
+        title="Benvenuto nel sistema di fatture del coffee shop di Enveart!",
+        description=f"Clicca il bottone qua sotto per creare una fattura",
+        color=discord.Color.green()
+    )
+    await interaction.response.send_message("mandato!", ephemeral=True)
+    await interaction.channel.send(embed=embed, view=fattura)
 client.run(TOKEN)
