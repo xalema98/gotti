@@ -7,7 +7,7 @@ load_dotenv()
 
 nomi = []
 fatture = []
-num = 0
+iterazioni = 0
 
 TOKEN = str(os.getenv("TOKEN"))
 GUILD_ID = 1466759785805516918
