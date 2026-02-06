@@ -113,7 +113,7 @@ async def conto_settimanale(interaction: discord.Interaction, tag: discord.Membe
     utente = tag.id
     for i in range(iterazioni):
         if(utente == nomi[i]):
-            await interaction.response.send_message(f"l'utente <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
+            await interaction.response.send_message(f"Il dipendentee <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
             controllo = 1
             break
     

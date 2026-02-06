@@ -5,8 +5,8 @@ import os
 
 load_dotenv()
 
-nomi = []
-fatture = []
+nomi = [0, 1, 2]
+fatture = [0, 1, 2]
 iterazioni = 0
 
 TOKEN = str(os.getenv("TOKEN"))
@@ -171,7 +171,7 @@ async def conto_settimanale(interaction: discord.Interaction, tag: discord.Membe
     utente = tag.id
     for i in range(iterazioni):
         if(utente == nomi[i]):
-            await interaction.response.send_message(f"l'utente <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
+            await interaction.response.send_message(f"Il dipendente <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
             controllo = 1
             break
     
