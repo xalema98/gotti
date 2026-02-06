@@ -5,6 +5,10 @@ import os
 
 load_dotenv()
 
+nomi = []
+fatture = []
+num = 0
+
 TOKEN = str(os.getenv("TOKEN"))
 GUILD_ID = 1466759785805516918
 intents = discord.Intents.default()
@@ -65,20 +69,20 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         await canale_ordini.send(content="<@&1466774237099331651> <@&1466773674144174140> <@&1466773435530346641> <@&1466773824484933834>")
         await canale_ordini.send(embed=embed_ordini)
 
-class FattureModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
+class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
     nome = discord.ui.TextInput(
         label = 'Nome Cognome',
         placeholder = "Jeff Smith",
         required=True
     )
     ordine = discord.ui.TextInput(
-        label='Ordine',
+        label='Servizio',
         placeholder='10x10, 5x5',
         required=True
     )
     prezzo = discord.ui.TextInput(
         label='prezzo',
-        placeholder='$6000, £90000',
+        placeholder='6000, 90000',
         required=True
     )
     dataora = discord.ui.TextInput(
@@ -87,17 +91,33 @@ class FattureModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         required=True
     )
     async def on_submit(self, interaction: discord.Interaction):
+        prezzo = str(self.prezzo)
+        global nomi
+        global fatture
+        global iterazioni
+        controllo = 0
+        id_utente = interaction.user.id
+        for i in range(iterazioni):
+            if(id_utente == nomi[i]):
+                fatture[i] = fatture[i] + int(prezzo)
+                controllo = 1
+                break
+        if controllo != 1:
+            nomi[iterazioni] = id_utente
+            fatture[iterazioni] = int(prezzo)
+            iterazioni = iterazioni + 1
         canale_ordini = client.get_channel(1466939135322361899)
         embed_ordini = discord.Embed(
-            title="🔔 Fattura creata!",
-            color=discord.Color.green(),
-            timestamp=interaction.created_at
-        )
+        title="🔔 Fattura creata!",
+        color=discord.Color.green(),
+        timestamp=interaction.created_at
+    )   
         embed_ordini.add_field(name="Nome", value=self.nome, inline=True)
-        embed_ordini.add_field(name="Prodotto", value=self.ordine, inline=False)
-        embed_ordini.add_field(name="prezzo", value=self.prezzo, inline=False)
+        embed_ordini.add_field(name="Servizio", value=self.ordine, inline=False)
+        embed_ordini.add_field(name="prezzo", value='$' + prezzo, inline=False)
         embed_ordini.add_field(name="Data/ora", value=self.dataora, inline=False)
         await interaction.channel.send(embed=embed_ordini)
+        await interaction.response.send_message("fattura inviata!", ephemeral=True)
 
 class ordini_bott(discord.ui.View):
     def __init__(self, *, timeout = None):
@@ -140,4 +160,22 @@ async def fattura(interaction: discord.Interaction):
     )
     await interaction.response.send_message("mandato!", ephemeral=True)
     await interaction.channel.send(embed=embed, view=fattura)
+
+@client.tree.command(name="conto_settimanale", description="manda il resoconto settimanale dell'utente selezionato")
+@app_commands.describe(tag="Inserisci il tag del dipendente selezionato")
+async def conto_settimanale(interaction: discord.Interaction, tag: discord.Member):
+    global nomi
+    global fatture
+    global iterazioni
+    controllo = 0
+    utente = tag.id
+    for i in range(iterazioni):
+        if(utente == nomi[i]):
+            await interaction.response.send_message(f"l'utente <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
+            controllo = 1
+            break
+    
+    if(controllo != 1):
+        await interaction.response.send_message("nessun utente trovato", ephemeral=True)
+
 client.run(TOKEN)
