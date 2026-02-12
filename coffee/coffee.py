@@ -1,12 +1,14 @@
 import discord
 from discord import app_commands
+from discord.ext import tasks
 from dotenv import load_dotenv, dotenv_values
 import os
+import datetime
 
 load_dotenv()
 
-nomi = [0, 1, 2]
-fatture = [0, 1, 2]
+nomi = []
+fatture = []
 iterazioni = 0
 
 TOKEN = str(os.getenv("TOKEN"))
@@ -103,8 +105,8 @@ class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
                 controllo = 1
                 break
         if controllo != 1:
-            nomi[iterazioni] = id_utente
-            fatture[iterazioni] = int(prezzo)
+            nomi.append(id_utente)
+            fatture.append(int(prezzo))
             iterazioni = iterazioni + 1
         canale_ordini = client.get_channel(1466939135322361899)
         embed_ordini = discord.Embed(
@@ -151,8 +153,16 @@ async def ordine(interaction: discord.Interaction):
 
 @client.tree.command(name="fattura", description="manda embed fatture")
 async def fattura(interaction: discord.Interaction):
+    global nomi
+    global fatture
+    global iterazioni
     fattura = fattura_bott()
     channel = 1466900540100182087
+    for i in range(iterazioni):
+        nomi.pop(i)
+        fatture.pop(i)
+    await interaction.channel.purge(limit= iterazioni + 1)
+    iterazioni = 0
     embed = discord.Embed(
         title="Benvenuto nel sistema di fatture del coffee shop di Enveart!",
         description=f"Clicca il bottone qua sotto per creare una fattura",
@@ -169,13 +179,16 @@ async def conto_settimanale(interaction: discord.Interaction, tag: discord.Membe
     global iterazioni
     controllo = 0
     utente = tag.id
-    for i in range(iterazioni):
-        if(utente == nomi[i]):
-            await interaction.response.send_message(f"Il dipendente <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
-            controllo = 1
-            break
-    
-    if(controllo != 1):
+    if iterazioni != 0:
+        for i in range(iterazioni):
+            if(utente == nomi[i]):
+                await interaction.response.send_message(f"Il dipendente <@{utente}> ha fatto ${fatture[i]} in fatture", ephemeral=True)
+                controllo = 1
+                break
+        
+        if(controllo != 1):
+            await interaction.response.send_message("nessun utente trovato", ephemeral=True)
+    else:
         await interaction.response.send_message("nessun utente trovato", ephemeral=True)
 
 client.run(TOKEN)
