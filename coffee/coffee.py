@@ -72,11 +72,6 @@ class OrdineModal(discord.ui.Modal, title='Nuovo Ordine Coffee Shop'):
         await canale_ordini.send(embed=embed_ordini)
 
 class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
-    nome = discord.ui.TextInput(
-        label = 'Nome Cognome',
-        placeholder = "Jeff Smith",
-        required=True
-    )
     ordine = discord.ui.TextInput(
         label='Servizio',
         placeholder='10x10, 5x5',
@@ -114,7 +109,7 @@ class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
         color=discord.Color.green(),
         timestamp=interaction.created_at
     )   
-        embed_ordini.add_field(name="Nome", value=self.nome, inline=True)
+        embed_ordini.add_field(name="Nome", value=interaction.user.display_name, inline=True)
         embed_ordini.add_field(name="Servizio", value=self.ordine, inline=False)
         embed_ordini.add_field(name="prezzo", value='$' + prezzo, inline=False)
         embed_ordini.add_field(name="Data/ora", value=self.dataora, inline=False)
@@ -157,7 +152,6 @@ async def fattura(interaction: discord.Interaction):
     global fatture
     global iterazioni
     fattura = fattura_bott()
-    channel = 1466900540100182087
     for i in range(iterazioni):
         nomi.pop(i)
         fatture.pop(i)

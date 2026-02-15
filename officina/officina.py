@@ -31,11 +31,6 @@ class MyClient(discord.Client):
 client = MyClient()
 
 class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
-    nome = discord.ui.TextInput(
-        label = 'Nome Cognome',
-        placeholder = "Jeff Smith",
-        required=True
-    )
     ordine = discord.ui.TextInput(
         label='Servizio',
         placeholder='kit riparazione, modifiche (elenco)',
@@ -73,7 +68,7 @@ class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
         color=discord.Color.green(),
         timestamp=interaction.created_at
     )   
-        embed_ordini.add_field(name="Nome", value=self.nome, inline=True)
+        embed_ordini.add_field(name="Nome", value=interaction.user.display_name, inline=True)
         embed_ordini.add_field(name="Servizio", value=self.ordine, inline=False)
         embed_ordini.add_field(name="prezzo", value='$' + prezzo, inline=False)
         embed_ordini.add_field(name="Data/ora", value=self.dataora, inline=False)
