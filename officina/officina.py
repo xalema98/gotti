@@ -59,8 +59,8 @@ class FattureModal(discord.ui.Modal, title='Nuova Fattura Officina'):
                 controllo = 1
                 break
         if controllo != 1:
-            nomi[iterazioni] = id_utente
-            fatture[iterazioni] = int(prezzo)
+            nomi.append(id_utente)
+            fatture.append(int(prezzo))
             iterazioni = iterazioni + 1
         canale_ordini = client.get_channel(1466939135322361899)
         embed_ordini = discord.Embed(
