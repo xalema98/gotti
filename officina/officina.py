@@ -8,8 +8,8 @@ load_dotenv()
 global nomi
 global fatture
 global iterazioni
-nomi = [0, 1, 2]
-fatture = [0, 1, 2]
+nomi = []
+fatture = []
 iterazioni = 0
 
 
